@@ -1,7 +1,7 @@
-import React from "react";
-import { Redirect } from "react-router-dom";
-import { createUser } from "../services/userAPI";
-import Carregando from "./Carregando";
+import React from 'react';
+import { Redirect } from 'react-router-dom';
+import { createUser } from '../services/userAPI';
+import Carregando from './Carregando';
 
 const MAX_TAM_VALUE = 2;
 
@@ -10,7 +10,7 @@ class Login extends React.Component {
     super();
 
     this.state = {
-      nomeDigitado: "",
+      nomeDigitado: '',
       buttonDisabled: true,
       loading: false,
       login: false,
@@ -63,8 +63,8 @@ class Login extends React.Component {
                 data-testid="login-submit-button"
                 value=""
                 id="button"
-                disabled={buttonDisabled}
-                onClick={this.handleClick}
+                disabled={ buttonDisabled }
+                onClick={ this.handleClick }
               />
               Entrar
             </label>
