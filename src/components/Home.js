@@ -13,10 +13,10 @@ class Home extends React.Component {
     return (
       <div>
         <Route exact path="/" component={ Login } />
-        <Route path="/album" component={ Album } />
+        <Route path="/album/:id" component={ Album } />
         <Route path="/favorites" component={ Favorites } />
-        <Route path="/profile" component={ Profile } />
-        <Route path="/profile/edit" component={ ProfileEdit } />
+        <Route exact path="/profile" component={ Profile } />
+        <Route exact path="/profile/edit" component={ ProfileEdit } />
         <Route path="/search" component={ Search } />
         <Route path="*" component={ NotFound } />
       </div>
