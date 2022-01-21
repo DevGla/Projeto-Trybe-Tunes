@@ -14,6 +14,7 @@ class Login extends React.Component {
       buttonDisabled: true,
       loading: false,
       login: false,
+      dadosApi: [],
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -31,11 +32,12 @@ class Login extends React.Component {
   async handleClick() {
     const { nomeDigitado } = this.state;
     this.setState({ loading: true });
-    await createUser({ name: nomeDigitado });
-    this.setState({
+    const requisicao = await createUser({ name: nomeDigitado });
+    this.setState((currentState) => ({
       loading: false,
       login: true,
-    });
+      dadosApi: [...currentState.dadosApi, requisicao],
+    }));
   }
 
   render() {
@@ -46,6 +48,7 @@ class Login extends React.Component {
           <Carregando />
         ) : (
           <form>
+            <h1>Tela de Login</h1>
             <label htmlFor="nome">
               Digite seu nome:
               <input
