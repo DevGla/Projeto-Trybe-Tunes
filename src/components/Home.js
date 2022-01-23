@@ -13,7 +13,7 @@ class Home extends React.Component {
     return (
       <div>
         <Route exact path="/" component={ Login } />
-        <Route path="/album/:id" component={ Album } />
+        <Route path="/album/:id" render={ (props) => <Album { ...props } /> } />
         <Route path="/favorites" component={ Favorites } />
         <Route exact path="/profile" component={ Profile } />
         <Route exact path="/profile/edit" component={ ProfileEdit } />
