@@ -23,7 +23,7 @@ class Search extends React.Component {
   handleChange(evento) {
     const { artistaDigitado } = this.state;
     this.setState({ artistaDigitado: evento.target.value });
-    if (artistaDigitado.length >= 2) {
+    if (artistaDigitado.length >= 1) {
       this.setState({ buttonDisabled: false });
     }
   }
