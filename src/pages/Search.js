@@ -21,6 +21,7 @@ class Search extends React.Component {
   }
 
   handleChange(evento) {
+    const { artistaDigitado } = this.state;
     this.setState({
       artistaDigitado: evento.target.value,
       nameArtist: evento.target.value,
