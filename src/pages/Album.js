@@ -40,9 +40,20 @@ class Album extends React.Component {
         <h2>
           <Header />
         </h2>
-        <p data-testid="artist-name">{infoArtist.artistName}</p>
-        <p data-testid="album-name">{infoArtist.collectionName}</p>
-        <MusicCard infoAlbum={ infoMusic } />
+        <section>
+          <p data-testid="artist-name">{infoArtist.artistName}</p>
+          <p data-testid="album-name">{infoArtist.collectionName}</p>
+          {infoMusic.slice(1).map((track) => (
+            <MusicCard
+              key={ track.trackId }
+              id={ track.trackId }
+              name={ track.trackName }
+              src={ track.previewUrl }
+              infoMusic={ infoMusic }
+
+            />
+          ))}
+        </section>
       </div>
     );
   }

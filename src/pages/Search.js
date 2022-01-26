@@ -21,8 +21,10 @@ class Search extends React.Component {
   }
 
   handleChange(evento) {
-    const { artistaDigitado } = this.state;
-    this.setState({ artistaDigitado: evento.target.value });
+    this.setState({
+      artistaDigitado: evento.target.value,
+      nameArtist: evento.target.value,
+    });
     if (artistaDigitado.length >= 1) {
       this.setState({ buttonDisabled: false });
     }
@@ -30,13 +32,16 @@ class Search extends React.Component {
 
   async handleClick(evento) {
     evento.preventDefault();
-    this.setState({ requisicaoState: '' });
     const { artistaDigitado } = this.state;
+    this.setState({
+      login: true,
+      loading: true,
+    });
     const requisicao = await searchAlbumsAPI(artistaDigitado);
     this.setState({
       login: true,
+      loading: false,
       requisicaoState: requisicao,
-      nameArtist: artistaDigitado,
       artistaDigitado: '',
     });
   }
@@ -53,10 +58,11 @@ class Search extends React.Component {
 
     const albunsArtista = (
       <div>
-        <h2>
-          { `Resultado de álbuns de: ${nameArtist} `}
-        </h2>
-
+        {
+          <p>
+            {`Resultado de álbuns de: ${nameArtist} `}
+          </p>
+        }
         {loading ? (
           <Carregando />
         ) : (
@@ -114,7 +120,7 @@ class Search extends React.Component {
                 disabled={ buttonDisabled }
                 onClick={ this.handleClick }
               />
-              Entrar
+              Pesquisar
             </label>
           </form>
         )}

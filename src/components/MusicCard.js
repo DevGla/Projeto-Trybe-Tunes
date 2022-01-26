@@ -17,37 +17,36 @@ class MusicCard extends React.Component {
 
   handleClick = async ({ target: { checked } }) => {
     const { infoAlbum } = this.props;
-    this.setState({ loading: true, isFavorite: checked });
-    const requisicao = await addSong(infoAlbum);
-    if (requisicao) this.setState({ loading: false });
-  }
+    this.setState({ loading: true });
+    this.setState({ isFavorite: checked });
+    await addSong(infoAlbum);
+    this.setState({ loading: false });
+  };
 
   render() {
-    const { infoAlbum } = this.props;
+    const { id, src, name } = this.props;
     const { loading, isFavorite } = this.state;
     return (
       <div>
         {loading ? (
           <Carregando />
         ) : (
-          infoAlbum.slice(1).map((track) => (
-            <div key={ track.trackId }>
-              <p>{track.trackName}</p>
+          <div>
+            <section>
+              <p>{name}</p>
               <audio
                 data-testid="audio-component"
-                src={ track.previewUrl }
+                src={ src }
                 controls
               >
                 <track kind="captions" />
                 O seu navegador não suporta o elemento
-                <code>{track.previewUrl}</code>
+                <code>{src}</code>
               </audio>
-              <label
-                htmlFor="favorita"
-              >
+              <label htmlFor="favorita">
                 <input
                   type="checkbox"
-                  data-testid={ `checkbox-music-${track.trackId}` }
+                  data-testid={ `checkbox-music-${id}` }
                   name="loading"
                   id="favorita"
                   checked={ isFavorite }
@@ -55,8 +54,8 @@ class MusicCard extends React.Component {
                 />
                 Favoritar
               </label>
-            </div>
-          ))
+            </section>
+          </div>
         )}
       </div>
     );
@@ -65,11 +64,10 @@ class MusicCard extends React.Component {
 
 // Verificar essa prop de um objeto que funcionou como string
 MusicCard.propTypes = {
-  infoAlbum: PropTypes.string,
-};
-
-MusicCard.defaultProps = {
-  infoAlbum: '',
+  infoAlbum: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  src: PropTypes.string.isRequired,
 };
 
 export default MusicCard;
