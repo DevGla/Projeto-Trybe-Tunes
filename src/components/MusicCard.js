@@ -1,6 +1,6 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
-import { addSong } from '../services/favoriteSongsAPI';
+import { addSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
 import Carregando from '../pages/Carregando';
 
 class MusicCard extends React.Component {
@@ -13,15 +13,33 @@ class MusicCard extends React.Component {
     };
 
     this.handleClick = this.handleClick.bind(this);
+    this.getLocalStorage = this.getLocalStorage.bind(this);
+  }
+
+  componentDidMount() {
+    this.getLocalStorage();
   }
 
   handleClick = async ({ target: { checked } }) => {
     const { infoAlbum } = this.props;
-    this.setState({ loading: true });
-    this.setState({ isFavorite: checked });
+    this.setState({
+      loading: true,
+      isFavorite: checked,
+    });
     await addSong(infoAlbum);
     this.setState({ loading: false });
   };
+
+  async getLocalStorage() {
+    const { id } = this.props;
+    this.setState({ loading: true });
+    const favoriteSong = await getFavoriteSongs();
+    const favorite = favoriteSong.some((music) => music.trackId === id);
+    this.setState({
+      loading: false,
+      isFavorite: favorite,
+    });
+  }
 
   render() {
     const { id, src, name } = this.props;
