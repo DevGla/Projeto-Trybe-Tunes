@@ -59,11 +59,7 @@ class Search extends React.Component {
 
     const albunsArtista = (
       <div>
-        {
-          <p>
-            {`Resultado de álbuns de: ${nameArtist} `}
-          </p>
-        }
+        {<p>{`Resultado de álbuns de: ${nameArtist} `}</p>}
         {loading ? (
           <Carregando />
         ) : (
@@ -95,6 +91,18 @@ class Search extends React.Component {
 
     return (
       <div data-testid="page-search">
+        <label htmlFor="button">
+          <input
+            type="button"
+            data-testid="search-artist-button"
+            name="button"
+            value=""
+            id="button"
+            disabled={ buttonDisabled }
+            onClick={ this.handleClick }
+          />
+          Pesquisar
+        </label>
         {login ? (
           albunsArtista
         ) : (
@@ -110,18 +118,6 @@ class Search extends React.Component {
                 onChange={ this.handleChange }
                 value={ artistaDigitado }
               />
-            </label>
-            <label htmlFor="button">
-              <input
-                type="button"
-                data-testid="search-artist-button"
-                name="button"
-                value=""
-                id="button"
-                disabled={ buttonDisabled }
-                onClick={ this.handleClick }
-              />
-              Pesquisar
             </label>
           </form>
         )}

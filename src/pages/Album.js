@@ -35,6 +35,7 @@ class Album extends React.Component {
 
   render() {
     const { infoArtist, infoMusic } = this.state;
+    console.log(infoMusic);
     return (
       <div data-testid="page-album">
         <h2>
@@ -49,7 +50,7 @@ class Album extends React.Component {
               id={ track.trackId }
               name={ track.trackName }
               src={ track.previewUrl }
-              infoMusic={ infoMusic }
+              infoMusic={ track }
 
             />
           ))}
