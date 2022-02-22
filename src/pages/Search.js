@@ -1,129 +1,106 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
-import searchAlbumsAPI from '../services/searchAlbumsAPI';
 import Carregando from './Carregando';
+import searchAlbumsAPI from '../services/searchAlbumsAPI';
 
-class Search extends React.Component {
+class Search extends Component {
   constructor() {
     super();
-
     this.state = {
       buttonDisabled: true,
-      artistaDigitado: '',
+      band: '',
       loading: false,
-      login: false,
-      requisicaoState: [],
-      nameArtist: '',
+      ready: false,
+      bandName: [],
+      resultName: '',
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleClick = this.handleClick.bind(this);
   }
 
-  handleChange(evento) {
-    const { artistaDigitado } = this.state;
-    this.setState({
-      artistaDigitado: evento.target.value,
-      nameArtist: evento.target.value,
-    });
-    if (artistaDigitado.length >= 1) {
-      this.setState({ buttonDisabled: false });
-    }
-  }
+   searchAlbums = async (event) => {
+     event.preventDefault();
+     this.setState({ bandName: '' });
+     const { band } = this.state;
+     const result = await searchAlbumsAPI(band);
+     this.setState({
+       bandName: result,
+       ready: true,
+       resultName: band,
+       band: '' });
+   }
 
-  async handleClick(evento) {
-    evento.preventDefault();
-    const { artistaDigitado } = this.state;
-    this.setState({
-      login: true,
-      loading: true,
-    });
-    const requisicao = await searchAlbumsAPI(artistaDigitado);
-    this.setState({
-      login: true,
-      loading: false,
-      requisicaoState: requisicao,
-      artistaDigitado: '',
-    });
-  }
+   render() {
+     const { buttonDisabled, loading, ready, bandName, resultName } = this.state;
+     const searcherArtist = (
+       <label htmlFor="request">
+         <input
+           data-testid="search-artist-input"
+           onChange={ ({ target }) => {
+             if (target.value.length >= 2) {
+               this.setState({
+                 buttonDisabled: false,
+                 band: target.value,
+               });
+             } else {
+               this.setState({
+                 buttonDisabled: true,
+                 band: target.value,
+               });
+             }
+           } }
+         />
+         <button
+           data-testid="search-artist-button"
+           type="button"
+           disabled={ buttonDisabled }
+           onClick={ this.searchAlbums }
+         >
+           Pesquisar
+         </button>
+       </label>);
 
-  render() {
-    const {
-      buttonDisabled,
-      artistaDigitado,
-      loading,
-      login,
-      requisicaoState,
-      nameArtist,
-    } = this.state;
+     const checkItsLoadingOver = (
+       <div>
+         <header>
+           { searcherArtist }
+         </header>
+         <h2>
+           { `Resultado  de álbuns de:  ${resultName} `}
+         </h2>
 
-    const albunsArtista = (
-      <div>
-        {<p>{`Resultado de álbuns de: ${nameArtist} `}</p>}
-        {loading ? (
-          <Carregando />
-        ) : (
-          <ol>
-            {requisicaoState.length ? (
-              requisicaoState.map((banda) => (
-                <li key={ banda.artistId }>
-                  <header>
-                    {`${banda.artistName} || ${banda.collectionName}`}
-
-                    <img src={ banda.artworkUrl100 } alt={ banda.artistName } />
-
-                    <Link
-                      to={ `/album/${banda.collectionId}` }
-                      data-testid={ `link-to-album-${banda.collectionId}` }
-                    >
-                      More Informations
-                    </Link>
-                  </header>
-                </li>
-              ))
-            ) : (
-              <li> Nenhum álbum foi encontrado</li>
-            )}
-          </ol>
-        )}
-      </div>
-    );
-
-    return (
-      <div data-testid="page-search">
-        <label htmlFor="button">
-          <input
-            type="button"
-            data-testid="search-artist-button"
-            name="button"
-            value=""
-            id="button"
-            disabled={ buttonDisabled }
-            onClick={ this.handleClick }
-          />
-          Pesquisar
-        </label>
-        {login ? (
-          albunsArtista
-        ) : (
-          <form>
-            <h1>Tela de pesquisa</h1>
-            <Header />
-            <label htmlFor="artista">
-              <input
-                type="text"
-                id="artista"
-                data-testid="search-artist-input"
-                name="artista"
-                onChange={ this.handleChange }
-                value={ artistaDigitado }
-              />
-            </label>
-          </form>
-        )}
-      </div>
-    );
-  }
+         { loading ? (
+           <Carregando />
+         )
+           : (
+             <ol>
+               {bandName.length ? bandName.map((band) => (
+                 <li
+                   key={ band.artistId }
+                 >
+                   <header>
+                     {`${band.artistName} || ${band.collectionName}`}
+                     <img src={ band.artworkUrl100 } alt={ band.artistName } />
+                     <Link
+                       to={ `/album/${band.collectionId}` }
+                       data-testid={ `link-to-album-${band.collectionId}` }
+                     >
+                       More
+                     </Link>
+                   </header>
+                 </li>))
+                 : <li> Nenhum álbum foi encontrado</li>}
+             </ol>
+           )}
+       </div>);
+     return (
+       <div data-testid="page-search">
+         <Header />
+         <form>
+           {ready ? checkItsLoadingOver : (searcherArtist)}
+         </form>
+       </div>
+     );
+   }
 }
 
 export default Search;
