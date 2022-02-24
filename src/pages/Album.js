@@ -35,7 +35,6 @@ class Album extends React.Component {
 
   render() {
     const { infoArtist, infoMusic } = this.state;
-    console.log(infoMusic);
     return (
       <div data-testid="page-album">
         <h2>

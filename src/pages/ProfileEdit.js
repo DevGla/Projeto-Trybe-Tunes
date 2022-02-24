@@ -1,19 +1,20 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router-dom';
 import Header from '../components/Header';
 import Carregando from './Carregando';
 import { getUser, updateUser } from '../services/userAPI';
 
-const EMAIL_SHOULD_CONTAIN = /[a-z0-9]+@+[a-z]+.+[a-z]/;
+// Regex para validar os caracteres do email
+const VALIDATE_EMAIL = /[a-z0-9]+@+[a-z]+.+[a-z]/;
 
-class ProfileEdit extends Component {
+class ProfileEdit extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      redirect: false,
-      isLoading: true,
-      isDisabled: false,
+      profile: false,
+      loading: true,
+      buttonDisabled: false,
       name: '',
       email: '',
       description: '',
@@ -24,40 +25,36 @@ class ProfileEdit extends Component {
   componentDidMount() {
     getUser()
       .then(({ name, email, description, image }) => {
-        this.setState({ name, email, description, image, isLoading: false });
+        this.setState({ name, email, description, image, loading: false });
       });
   }
 
-  componentWillUnmount() {
-    this.setState = () => {};
-  }
-
-  validations = () => {
-    const { name, email, description, image, isDisabled } = this.state;
-    let canDisable = isDisabled;
+  validate = () => {
+    const { name, email, description, image } = this.state;
     if (name === ''
     || email === ''
-    || !EMAIL_SHOULD_CONTAIN.test(email)
+    || !VALIDATE_EMAIL.test(email)
     || description === ''
-    || image === '') canDisable = true;
-    else canDisable = false;
-
-    this.setState({ isDisabled: canDisable });
+    || image === '') {
+      this.setState({ buttonDisabled: true });
+    } else {
+      this.setState({ buttonDisabled: false });
+    }
   }
 
-  handleInput = ({ target: { id, value } }) => {
+  handleChange = ({ target: { id, value } }) => {
     this.setState({
       [id]: value,
-    }, this.validations);
+    }, this.validate);
   }
 
   updateInfoUser = (event) => {
     event.preventDefault();
-    this.setState({ isLoading: true },
+    this.setState({ loading: true },
       () => {
         const { name, email, description, image } = this.state;
         updateUser({ name, email, description, image })
-          .then(() => this.setState({ isLoading: false, redirect: true }));
+          .then(() => this.setState({ loading: false, profile: true }));
       });
   }
 
@@ -67,36 +64,34 @@ class ProfileEdit extends Component {
       email,
       description,
       image,
-      isLoading,
-      isDisabled,
-      redirect } = this.state;
+      loading,
+      buttonDisabled,
+      profile } = this.state;
     return (
-      <>
+      <div>
         <Header />
-        { redirect && <Redirect to="/profile" /> }
-        <section data-testid="page-profile-edit" className="profile-edit-screen">
+        { profile && <Redirect to="/profile" /> }
+        <section data-testid="page-profile-edit">
           <form>
             <h1>Editar perfil</h1>
             <label htmlFor="name">
               Name
               <input
-                autoComplete="off"
                 type="text"
                 id="name"
                 value={ name }
                 data-testid="edit-input-name"
-                onChange={ this.handleInput }
+                onChange={ this.handleChange }
               />
             </label>
             <label htmlFor="email">
               Email
               <input
-                autoComplete="off"
                 type="text"
                 id="email"
                 value={ email }
                 data-testid="edit-input-email"
-                onChange={ this.handleInput }
+                onChange={ this.handleChange }
               />
             </label>
             <label htmlFor="description">
@@ -105,35 +100,34 @@ class ProfileEdit extends Component {
                 id="description"
                 value={ description }
                 data-testid="edit-input-description"
-                onChange={ this.handleInput }
+                onChange={ this.handleChange }
               />
             </label>
             <label htmlFor="image">
               Imagem de perfil
 
               <input
-                autoComplete="off"
                 id="image"
                 data-testid="edit-input-image"
                 value={ image }
-                onChange={ this.handleInput }
+                onChange={ this.handleChange }
               />
             </label>
             <button
               type="submit"
               data-testid="edit-button-save"
-              disabled={ isDisabled }
+              disabled={ buttonDisabled }
               onClick={ this.updateInfoUser }
             >
               Salvar
             </button>
           </form>
-          <section className="image-container">
+          <section>
             <img src={ image } alt="imagem de perfil" />
-            { isLoading && <Carregando /> }
+            { loading && <Carregando /> }
           </section>
         </section>
-      </>
+      </div>
     );
   }
 }

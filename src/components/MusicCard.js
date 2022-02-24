@@ -86,12 +86,12 @@ class MusicCard extends React.Component {
     );
   }
 }
-// Verificar essa prop de um objeto que funcionou como string
+
 MusicCard.propTypes = {
-  infoMusic: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
-  src: PropTypes.string.isRequired,
-};
+  infoMusic: PropTypes.array,
+  name: PropTypes.string,
+  id: PropTypes.string,
+  src: PropTypes.string,
+}.isRequired;
 
 export default MusicCard;
